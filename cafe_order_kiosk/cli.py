@@ -1,4 +1,5 @@
 from __future__ import annotations
+from cafe_order_kiosk.printer import ReceiptPrinter
 
 import shlex
 from dataclasses import dataclass
@@ -209,7 +210,15 @@ def handle_pay(store: KioskStore, state: CLIState, args: list[str]) -> None:
         return
 
     print(f"주문 #{order.id} 결제 완료 ({method}).")
-
+    
+    # ==========================================
+    # 결제가 성공적으로 완료되면 영수증 출력을 트리거합니다
+    # ==========================================
+    try:
+        printer = ReceiptPrinter(use_hardware=False)
+        printer.print_receipt(order)
+    except Exception as e:
+        print(f"영수증 출력 중 오류가 발생했습니다: {e}")
 
 def print_order(order) -> None:
     print(f"주문 #{order.id} ({format_status(order.status)})")
