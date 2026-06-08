@@ -20,13 +20,11 @@ class ReceiptPrinter:
         """Order 객체를 받아 영수증을 포맷팅하고 출력 명령을 전송합니다."""
         p = self.p
 
-        # 1. 영수증 헤더
         p.set(align='center', bold=True, width=2, height=2)
         p.text("CAFE KIOSK\n")
         p.set(align='center', bold=False, width=1, height=1)
         p.text("--------------------------------\n")
         
-        # 2. 주문 정보
         p.set(align='left')
         p.text(f"주문 번호 : #{order.id}\n")
         if order.paid_at:
@@ -38,7 +36,6 @@ class ReceiptPrinter:
             name_str = f"{item.name} x{item.quantity}"
             price_str = format_money(item.line_total)
             
-            # 32자 기준으로 여백 계산 (간단한 구현)
             spaces = 32 - len(name_str) - len(price_str)
             if spaces < 1: spaces = 1
             
@@ -48,11 +45,9 @@ class ReceiptPrinter:
 
         p.text("--------------------------------\n")
         
-        # 4. 결제 총액
         p.set(align='right', bold=True)
         p.text(f"총 결제 금액: {format_money(order.total)} 원\n\n")
         
-        # 5. 하단 바코드 및 꼬리말
         p.set(align='center', bold=False)
         if order.payment:
             p.text(f"결제 수단: {order.payment.method}\n")
@@ -60,11 +55,8 @@ class ReceiptPrinter:
         p.barcode(str(order.id).zfill(6), 'CODE39', 64, 2, '', '')
         p.text("\n이용해 주셔서 감사합니다.\n\n")
         
-        # 6. 용지 절단 (오토 커터)
         p.cut()
 
-        # Dummy 모드일 경우 안내 메시지 출력
         if isinstance(self.p, Dummy):
             print("\n[가상 프린터 렌더링 완료 - 실제 하드웨어 연결 시 영수증이 출력됩니다]")
-            # 개발 시 바이트 코드를 직접 보고 싶다면 아래 주석을 해제하세요
-            # print(self.p.output)
+            print(self.p.output)

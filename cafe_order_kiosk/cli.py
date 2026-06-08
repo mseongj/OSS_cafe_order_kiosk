@@ -180,7 +180,6 @@ def handle_orders(store: KioskStore, args: list[str]) -> None:
             f"  #{order.id} {format_status(order.status)} - {format_money(order.total)}"
         )
 
-
 def handle_pay(store: KioskStore, state: CLIState, args: list[str]) -> None:
     if state.current_order_id is None:
         print("선택된 주문이 없습니다. 먼저 '주문 생성'을 사용하세요.")
@@ -211,9 +210,7 @@ def handle_pay(store: KioskStore, state: CLIState, args: list[str]) -> None:
 
     print(f"주문 #{order.id} 결제 완료 ({method}).")
     
-    # ==========================================
-    # 결제가 성공적으로 완료되면 영수증 출력을 트리거합니다
-    # ==========================================
+    # 결제가 성공적으로 완료되면 영수증 출력을 트리거
     try:
         printer = ReceiptPrinter(use_hardware=False)
         printer.print_receipt(order)
